@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenium Test Runner</title>
+</head>
+<body>
+    <h1>Selenium Test Runner</h1>
+    <form action="/run_test" method="post">
+        <label for="environment">Seleccione el entorno:</label>
+        <select id="environment" name="environment">
+            <option value="uat">UAT</option>
+            <option value="prod">PROD</option>
+        </select>
+        <button type="submit">Run Test</button>
+    </form>
+</body>
+</html>

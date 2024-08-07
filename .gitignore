@@ -1,0 +1,64 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches
+*.cache
+*.log
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node.js dependencies
+node_modules/
+
+# Flask cache
+instance/
+.webassets-cache
+
+# Docker
+*.pid
+*.log
+*.yaml
+*.yml
+docker-compose.override.yml
+docker-compose.*
+.env
+.env.*
+
+# Selenium drivers
+chromedriver
+geckodriver
+msedgedriver
+
+# Editor specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating system specific
+.DS_Store
+Thumbs.db

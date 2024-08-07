@@ -1,0 +1,18 @@
+{
+    "uat": {
+        "url": "http://uat.example.com",
+        "paths": [
+            "/path1",
+            "/path2",
+            "/path3"
+        ]
+    },
+    "prod": {
+        "url": "http://prod.example.com",
+        "paths": [
+            "/path1",
+            "/path2",
+            "/path3"
+        ]
+    }
+}
