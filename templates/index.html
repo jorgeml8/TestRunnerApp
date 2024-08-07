@@ -11,9 +11,18 @@
         <label for="environment">Seleccione el entorno:</label>
         <select id="environment" name="environment">
             <option value="uat">UAT</option>
-            <option value="prod">PROD</option>
+            <option value="prd">PRD</option>
         </select>
         <button type="submit">Run Test</button>
     </form>
+
+    {% if results %}
+        <h2>Resultados de la Prueba:</h2>
+        <ul>
+            {% for result in results %}
+                <li>{{ result }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </body>
 </html>

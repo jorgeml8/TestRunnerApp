@@ -1,0 +1,31 @@
+{
+   "uat":[ 
+        {
+            "url": "http://10.147.112.4/id1/admin/",
+            "username": "jorge.magana@daikinapplied.com",
+            "password": "j0rg3.1981",
+            "paths": [
+                "http://amssl3uat/id1/admin/AMS_reports/attachment/add/"
+        
+              ],
+            "comment": "Prueba para el admin de ID1"
+        },
+        {
+            "url": "http://10.147.112.4/id2/admin/",
+            "username": "jorge.magana@daikinapplied.com",
+            "password": "j0rg3.1981",
+            "paths": [
+               "http://10.147.112.4/id2/admin/sfcs/entity/"
+                     ],
+            "comment": "Prueba para el admin de ID2"
+        }
+    ],
+    "prd": {
+        "url": "http://prod.example.com",
+        "paths": [
+            "/path1",
+            "/path2",
+            "/path3"
+        ]
+    }
+}

@@ -1,41 +1,76 @@
 import json
+import logging
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-import time
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
 def run_test():
-    with open('/config/config.json') as config_file:
+    with open('config/config.json') as config_file:
         config = json.load(config_file)
     
-    uat_config = config["uat"]
+    prd_configs = config["prd"]
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
     options.add_argument('--disable-dev-shm-usage')
-    
-    driver = webdriver.Remote(
-        command_executor='http://selenium-chrome:4444/wd/hub',
-        options=options
-    )
-    driver.get(uat_config["url"])
-    driver.maximize_window()
+    options.add_argument('--disable-gpu')
+    options.binary_location = '/usr/bin/google-chrome'  # Asegúrate de que la ruta sea correcta
 
-    try:
-        for path in uat_config["paths"]:
-            driver.get(f"{uat_config['url']}{path}")
-            search_box = driver.find_element(By.NAME, "q")
-            search_box.send_keys("Selenium testing")
-            search_box.send_keys(Keys.RETURN)
-            time.sleep(3)
+    driver = webdriver.Chrome(options=options)
+    results = []
 
-            results = driver.find_elements(By.CSS_SELECTOR, ".result")
-            assert len(results) > 0, f"No se encontraron resultados en {path}."
+    for prd_config in prd_configs:
+        logging.info(f"Iniciando prueba en {prd_config['url']} - {prd_config['comment']}")
+        results.append(f"Iniciando prueba en {prd_config['url']} - {prd_config['comment']}")
+        driver.get(prd_config["url"])
+        driver.maximize_window()
 
-        return "Prueba completada con éxito."
-    
-    except Exception as e:
-        return f"Error durante la prueba: {e}"
-    
-    finally:
-        driver.quit()
+        try:
+            # Iniciar sesión
+            username_field = driver.find_element_by_name("username")
+            password_field = driver.find_element_by_name("password")
+            login_button = driver.find_element_by_css_selector('input[type="submit"][value="Log in"]')
+            
+            username_field.send_keys(prd_config["username"])
+            password_field.send_keys(prd_config["password"])
+            login_button.click()
+
+            # Capturar todos los enlaces
+            all_links = driver.find_elements_by_tag_name('a')
+            links_to_test = []
+            logging.info(f"Encontrados {len(all_links)} enlaces en la página.")
+            for link in all_links:
+                href = link.get_attribute('href')
+                link_text = link.text
+                if href:
+                    links_to_test.append((link_text, href))
+                    logging.info(f"Enlace encontrado: texto='{link_text}', href='{href}'")
+
+            # Interactuar con los enlaces capturados
+            for link_text, href in links_to_test:
+                try:
+                    logging.info(f"Clic en el enlace con texto '{link_text}' y href: {href}")
+                    results.append(f"Clic en el enlace con texto '{link_text}' y href: {href}")
+                    driver.get(href)
+                    driver.back()
+                    results.append(f"Link '{href}' tested successfully.")
+                except Exception as e:
+                    error_message = f"Error al probar el enlace con texto '{link_text}' y href: {href}: {e}"
+                    logging.error(error_message)
+                    results.append(error_message)
+
+            logging.info(f"Prueba completada con éxito para {prd_config['url']}")
+            results.append(f"Prueba completada con éxito para {prd_config['url']}")
+
+        except Exception as e:
+            error_message = f"Error durante la prueba en {prd_config['url']}: {e}"
+            logging.error(error_message)
+            results.append(error_message)
+        
+    driver.quit()
+    return results
+
+# Ejecutar la prueba manualmente
+if __name__ == "__main__":
+    result = run_test()
+    for line in result:
+        print(line)
