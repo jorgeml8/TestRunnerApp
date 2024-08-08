@@ -32,9 +32,9 @@ Ensure you have Docker and Docker Compose installed on your machine. If not, fol
 
 1. **Build the Docker images and start the containers**:
 
-    \`\`\`bash
+    ```bash
     docker-compose up --build
-    \`\`\`
+    ```
 
     This command will:
     - Build the Docker images for the application and Selenium.
@@ -44,17 +44,17 @@ Ensure you have Docker and Docker Compose installed on your machine. If not, fol
 
     Once the containers are up and running, you can access the TestRunner application in your web browser at:
 
-    \`\`\`plaintext
+    ```plaintext
     http://localhost/testrunner
-    \`\`\`
+    ```
 
 ## Configuration
 
 ### Docker Compose Configuration
 
-The \`docker-compose.yml\` file defines the services and networks for the application. Here is an example configuration:
+The `docker-compose.yml` file defines the services and networks for the application. Here is an example configuration:
 
-\`\`\`yaml
+```yaml
 version: '3.8'
 
 networks:
@@ -94,17 +94,17 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
       - report_network
-\`\`\`
+```
 
 ### Environment Variables
 
-- \`SELENIUM_URL\`: URL of the Selenium server, which is set to \`http://selenium:4444/wd/hub\`.
+- `SELENIUM_URL`: URL of the Selenium server, which is set to `http://selenium:4444/wd/hub`.
 
 ### NGINX Configuration
 
-The \`nginx.conf\` file defines the reverse proxy settings to route requests to the \`testrunner\` service:
+The `nginx.conf` file defines the reverse proxy settings to route requests to the `testrunner` service:
 
-\`\`\`nginx
+```nginx
 events {
     worker_connections 1024;
 }
@@ -122,7 +122,7 @@ http {
         }
     }
 }
-\`\`\`
+```
 
 ## Running Tests
 
