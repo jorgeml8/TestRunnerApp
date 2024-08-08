@@ -1,20 +1,136 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selenium Test Runner</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Selenium Test Runner</title>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+        <link rel="stylesheet" href="/testrunner/static/css/w3.css">
+        <link href="/testrunner/static/css/PHSReportStyleSheet.css?v=V3.1.0" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/testrunner/static/css/waiting_indicator.css?v=V3.1.1" />
+        <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/datatables.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/testrunner/static/css/tab.css?v=V3.1.0" />
+        <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/highcharts.css"/>
+        <!--
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/w3.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/PHSReportStyleSheet.css?v=V3.1.0') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/waiting_indicator.css?v=V3.1.1') }}">
+        <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/datatables.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tab.css?v=V3.1.0') }}">-->
+        <style>
+          /* Custom style for date inputs */
+          input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            width: calc(50% - 10px);
+            height: 44px;
+          }
+      
+          div.input-row label {
+            display: inline-block;
+            margin-bottom: 5px;
+            width: 30%;
+            padding-right: 5px;
+          }
+          button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: calc(30% - 10px);
+            margin-left: 5px;
+            font-size: 14px;
+            height: 44px;
+          }
+          button[type="submit"]:hover {
+            background-color: #45a049;
+          }
+          .input-container {
+            margin-bottom: 10px;
+            text-align: center;
+          }
+          .input-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+          }
+          .table-responsive {
+            overflow-x: auto;
+            margin: 15px 0;
+          }
+          div.dt-container .dt-input {
+            background-color: #111;
+          }
+          #issuesTable th, #issuesTable td {
+            color: white;
+          }
+          #issuesTable th {
+            background-color: #000;
+          }
+          #issuesTable {
+            background-color: #333;
+          }
+          .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: white !important;
+            background-color: #333 !important;
+          }
+          .dt-button-info {
+            color: #111 !important;
+          }
+          input[type="text" i] {
+            padding: 3px;
+            box-sizing: border-box;
+          }
+          .dt-column-title {
+            padding: 3px;
+            box-sizing: border-box;
+          }
+          #issuesTable tr.selected {
+            background-color: #a2d2ff; /* Light blue background when selected */
+          }
+          .highcharts-dark {
+            --highcharts-neutral-color-80: rgb(214, 214, 214);
+          }
+          element.style {
+            fill: antiquewhite;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          select {
+            width: calc(20% - 10px);
+          }
+        </style>
+      </head>
+      <body>
+        <div class="headerTab">
+          <div class="header">
+            <img src="/testrunner/static/images/daikin.png" alt="Image Missing" style="height:50px;">
+            <div class="center headText">Selenium Test Runner</div><span class="version_control w3-hide-medium w3-hide-small">{{ version }}</span>
+          </div>    
 <body>
-    <h1>Selenium Test Runner</h1>
-    <form action="/run_test" method="post">
+ <!--   <h1>Selenium Test Runner</h1> -->
+    <form id="test-form" action="/testrunner/run_test" method="post">
         <label for="environment">Seleccione el entorno:</label>
         <select id="environment" name="environment">
             <option value="uat">UAT</option>
             <option value="prd">PRD</option>
         </select>
         <button type="submit">Run Test</button>
+        <button type="button" id="clearSearch" class="w3-btn w3-yellow w3-round-large dx-button dx-button-default dx-button-mode-contained dx-widget dx-button-has-text" style=" width: calc(30% - 10px);height: 44px; border: none;border-radius: 4px;padding: 12px 20px;">Reset</button>
+
     </form>
+    <div id="loadingIndicator" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+        <div style="border: 8x solid #f3f3f3; border-top: 8px solid #3498db; border-radius: 50%; width: 60px; height: 60px; animation: spin 2s linear infinite;"></div>
+      </div>
 
     {% if results %}
         <h2>Resultados de la Prueba:</h2>
@@ -24,5 +140,40 @@
             {% endfor %}
         </ul>
     {% endif %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!--    <script>
+        ('#test-form').on('submit', function(event) {
+        //document.getElementById('test-form').addEventListener('submit', function() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+        });
+        window.addEventListener('load', function() {
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+        window.location.href = '/testrunner';
+        }
+        });
+        ('#clearSearch').click(function(event) {
+        event.preventDefault();
+        window.location.href = "/testrunner/";
+      });
+    </script>-->
+    <script>
+        $(document).ready(function() {
+            $('#clearSearch').click(function(event) {
+                event.preventDefault();
+                window.location.href = "/testrunner/";
+            });
+            $('#test-form').on('submit', function() {
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('clearSearch').disabled = true;
+            });
+            window.addEventListener('load', function() {
+                if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+                    window.location.href = '/testrunner/';
+                }
+                document.getElementById('clearSearch').disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>

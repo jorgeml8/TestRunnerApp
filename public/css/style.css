@@ -1,0 +1,273 @@
+.container {
+    background-size: cover;
+    background: rgb(226, 226, 226); /* Old browsers */
+    background: -moz-linear-gradient(
+      top,
+      rgba(226, 226, 226, 1) 0%,
+      rgba(219, 219, 219, 1) 50%,
+      rgba(209, 209, 209, 1) 51%,
+      rgba(254, 254, 254, 1) 100%
+    ); /* FF3.6+ */
+    background: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0%, rgba(226, 226, 226, 1)),
+      color-stop(50%, rgba(219, 219, 219, 1)),
+      color-stop(51%, rgba(209, 209, 209, 1)),
+      color-stop(100%, rgba(254, 254, 254, 1))
+    ); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(
+      top,
+      rgba(226, 226, 226, 1) 0%,
+      rgba(219, 219, 219, 1) 50%,
+      rgba(209, 209, 209, 1) 51%,
+      rgba(254, 254, 254, 1) 100%
+    ); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(
+      top,
+      rgba(226, 226, 226, 1) 0%,
+      rgba(219, 219, 219, 1) 50%,
+      rgba(209, 209, 209, 1) 51%,
+      rgba(254, 254, 254, 1) 100%
+    ); /* Opera 11.10+ */
+    background: -ms-linear-gradient(
+      top,
+      rgba(226, 226, 226, 1) 0%,
+      rgba(219, 219, 219, 1) 50%,
+      rgba(209, 209, 209, 1) 51%,
+      rgba(254, 254, 254, 1) 100%
+    ); /* IE10+ */
+    background: linear-gradient(
+      to bottom,
+      rgba(226, 226, 226, 1) 0%,
+      rgba(219, 219, 219, 1) 50%,
+      rgba(209, 209, 209, 1) 51%,
+      rgba(254, 254, 254, 1) 100%
+    ); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=0 ); /* IE6-9 */
+    padding: 20px;
+  }
+  
+  .led-box {
+    height: 30px;
+    width: 25%;
+    margin: 10px 0;
+    float: left;
+  }
+  
+  .led-box p {
+    font-size: 12px;
+    text-align: center;
+    margin: 1em;
+  }
+  
+  .led-red {
+    width: 34px;
+    height: 34px;
+    background-color: #f00;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+      rgba(255, 0, 0, 0.5) 0 2px 12px;
+    -webkit-animation: blinkRed 0.5s infinite;
+    -moz-animation: blinkRed 0.5s infinite;
+    -ms-animation: blinkRed 0.5s infinite;
+    -o-animation: blinkRed 0.5s infinite;
+    animation: blinkRed 0.5s infinite;
+  }
+  
+  @-webkit-keyframes blinkRed {
+    from {
+      background-color: #f00;
+    }
+    50% {
+      background-color: #a00;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+        rgba(255, 0, 0, 0.5) 0 2px 0;
+    }
+    to {
+      background-color: #f00;
+    }
+  }
+  @-moz-keyframes blinkRed {
+    from {
+      background-color: #f00;
+    }
+    50% {
+      background-color: #a00;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+        rgba(255, 0, 0, 0.5) 0 2px 0;
+    }
+    to {
+      background-color: #f00;
+    }
+  }
+  @-ms-keyframes blinkRed {
+    from {
+      background-color: #f00;
+    }
+    50% {
+      background-color: #a00;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+        rgba(255, 0, 0, 0.5) 0 2px 0;
+    }
+    to {
+      background-color: #f00;
+    }
+  }
+  @-o-keyframes blinkRed {
+    from {
+      background-color: #f00;
+    }
+    50% {
+      background-color: #a00;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+        rgba(255, 0, 0, 0.5) 0 2px 0;
+    }
+    to {
+      background-color: #f00;
+    }
+  }
+  @keyframes blinkRed {
+    from {
+      background-color: #f00;
+    }
+    50% {
+      background-color: #a00;
+      box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+        rgba(255, 0, 0, 0.5) 0 2px 0;
+    }
+    to {
+      background-color: #f00;
+    }
+  }
+  
+  .led-gray {
+    width: 34px;
+    height: 34px;
+    background-color: #b3b3b3;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #cccccc 0 -1px 9px,
+      #b3b3b3 0 2px 12px;
+    text-align: center;
+  }
+  
+  .led-green {
+    width: 34px;
+    height: 34px;
+    background-color: #abff00;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
+      #89ff00 0 2px 12px;
+  }
+  
+  .led-blue {
+    width: 34px;
+    height: 34px;
+    background-color: #24e0ff;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px,
+      #3f8cff 0 2px 14px;
+  }
+  
+  #wrap {
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  .blink_me {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 3s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: blinker;
+    animation-duration: 3s;
+    animation-timing-function: linear;
+  }
+  
+  @-moz-keyframes blinker {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @-webkit-keyframes blinker {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes blinker {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .dx-datagrid-headers .dx-datagrid-text-content {
+    text-align: center;
+  }
+  .myClass {
+    font-size: 15px;
+  }
+  .medium-font {
+    font-size: 18px;
+  }
+  
+  .timer {
+    visibility: hidden;
+    width: 50%;
+    margin: auto;
+    border: 3px white;
+    padding: 10px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #fafafa;
+  }
+  
+  .dx-datagrid-header-panel .dx-toolbar {
+    margin: 0;
+    padding-right: 20px;
+    background-color: #337ab7;
+  }
+  
+  .dx-datagrid-header-panel .dx-toolbar-items-container {
+    height: 80px;
+  }
+  
+  .dx-datagrid-header-panel .dx-toolbar-before {
+    background-color: #337ab7;
+  }
+  
+  .dx-datagrid-header-panel .dx-selectbox {
+    margin: 17px 10px;
+  }
+  
+  .dx-datagrid-header-panel .dx-button {
+    margin: 17px 0;
+  }
+  
+  .clicked {
+    background-color: rgba(211, 211, 211, 0.3);
+  }

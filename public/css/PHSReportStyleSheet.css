@@ -1,0 +1,181 @@
+/***Stylesheet for PHS reports***/
+body{
+	cursor: default;
+	color: white;
+}
+/**Styling for loading page**/
+.loadingIcon{
+	position:fixed;
+    z-index:9999;
+	left:50%;
+	width:200px;
+	margin-left:-100px;
+	display:none;
+}
+
+/**Styling for data entry**/
+/*Wrapper to ensure label and input are adjacent to eachother*/
+.labelInputContainer {
+	float: left;
+	padding: 5px;
+	height: 50px;
+	margin: auto;
+}
+/*Configure the style for the data entry labels*/
+.label {
+	/*color: black;*/
+	font-size:15px; 
+	margin-left:10px;
+	font-weight: bold;
+}
+/*Configure the style for the dropdown menus*/
+.dropdown {
+	font-size:20px;  
+	color: black;
+	border-color: black;
+}
+/*Configure the style for the date entry boxes*/
+.dateTextBox {
+	font-size:20px;  
+	color: black;
+	border-color: #E9E9E9;
+	border-width: 1px;
+	width: 130px;
+}
+/*Configure the style for the date/time entry boxes*/
+.dateTimeTextBox {
+	font-size:20px;  
+	color: black;
+	border-color: #E9E9E9;
+	border-width: 1px;
+	width: 220px;
+}
+/*Configure the style for the submit button*/
+.submitButton{
+	
+	text-align: center;
+	font-size:20px;  
+	width:150px;
+	cursor: pointer;
+}
+/*Configure the style for the export button*/
+.exportButton{
+	float: right;
+	text-align: center;
+	font-size:20px;  
+	width:150px;
+	cursor: pointer;
+	display: none;
+}
+.submit{
+	background-color:#2874A6;
+	display: inline-block;
+}
+.submit:hover{
+	background-color:#4A6999;
+}
+.submit:active{
+	background-color:#3B5998;
+}
+.export{
+	background-color:#00897B;
+	display: none;
+	float: left;
+}
+.export:hover{
+	background-color:#009688;
+}
+.export:active{
+	background-color:#00695C;
+}
+.button{
+	padding:3.5px;
+	text-align:center;
+	border-radius: 3px;
+	margin: auto;
+}
+form{
+	clear: both;
+	/*background-color:#D0D0D0;*/
+	margin:15px;
+	padding:5px;
+}
+form:after { 
+    content: " "; 
+    display: block;
+    clear: both;
+} 
+
+/**Styling for reports**/
+/*Styling for report container*/
+.reportContainer{
+	clear: both;
+	/*background-color:#D0D0D0;*/
+	margin:15px;
+}
+.reportContainer:after { 
+    content: " "; 
+    display: block;
+    clear: both;
+} 
+/*Styling for half sized container*/
+.reportDivHalf{
+	width: 50%;
+	height: 70%;
+	min-width: 400px; 
+	float: left;
+}
+/*Styling for half sized container*/
+.reportDivFull{
+	width: 100%;
+	height: 100%;
+	float: left;
+}
+/*Styling for half sized list container*/
+.listDivHalf{
+	width: 50%;
+	height: 100%;
+	min-width: 400px; 
+	float: left;
+	font-size: 8px;
+}
+
+/*define colors*/
+.grey {
+	background-color: #E9E9E9;
+	background: -moz-linear-gradient(top, #E9E9E9, #C3C3C3);
+	background: -webkit-gradient(linear, left top, left bottom, from(#E9E9E9), to(#C3C3C3));
+	background: -o-linear-gradient(#E9E9E9, #C3C3C3);
+	background: linear-gradient(#E9E9E9, #C3C3C3);   
+}
+
+.lightblue {
+	background-color: #1a7fbc;
+	background: -moz-linear-gradient(top, #1a7fbc, #219fec);
+	background: -webkit-gradient(linear, left top, left bottom, from(#1a7fbc), to(#219fec));
+	background: -o-linear-gradient(#1a7fbc, #219fec);
+	background: linear-gradient(#1a7fbc, #219fec);
+}
+
+.green {
+	background-color: #4FF963;
+	background: -moz-linear-gradient(top, #4FF963, #3CB446);
+	background: -webkit-gradient(linear, left top, left bottom, from(#4FF963), to(#3CB446));
+	background: -o-linear-gradient(#4FF963, #3CB446);
+	background: linear-gradient(#4FF963, #3CB446);
+	border: 2px solid #1A1A1A !important;
+}
+
+.red {
+	background-color: #FF0000;
+	background: -moz-linear-gradient(top, #FF0000, #8F0000);
+	background: -webkit-gradient(linear, left top, left bottom, from(#FF0000), to(#8F0000));
+	background: -o-linear-gradient(#FF0000, #8F0000);
+	background: linear-gradient(#FF0000, #8F0000);
+	border: 2px solid #1A1A1A !important;
+}
+
+.custom_input button {
+	    line-height: 35px;
+    border-radius: 7px;
+}

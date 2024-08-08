@@ -1,0 +1,340 @@
+/*Style document*/
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+  background-color: #333;
+  overflow-x: auto;
+}
+html {
+  overflow-x: auto;
+  overflow-y: auto;
+  /* width:100%; */
+}
+/*Style the headerTab bar*/
+.headerTab {
+  z-index: 2147483647;
+}
+
+/*Style the header bar*/
+.header {
+  list-style-type: none;
+  margin: 0;
+  padding: 5;
+  overflow: hidden;
+  color: black;
+  border: 0px solid;
+  background-color: #1a7fbc;
+  background: -moz-linear-gradient(0deg, #3b5998, #111);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#1a7fbc),
+    to(#219fec)
+  );
+  background: -o-linear-gradient(#1a7fbc, #219fec);
+  background: linear-gradient(45deg, #222, #3b5998);
+}
+
+/*style generic headText*/
+.headText {
+  font-weight: bold;
+  font-size: 30px;
+  padding: 5;
+  color: white;
+}
+
+/*Style center header*/
+.center {
+  float: center;
+  text-align: center;
+  font-size: 30px;
+}
+
+/*style left header*/
+.left {
+  float: left;
+}
+
+/*style right header*/
+.right {
+  float: right;
+  /* width: 95%; */
+  /* height: 100px; */
+  right: 50px;
+  position: absolute;
+  top: -8px;
+}
+
+/* Style the tab list */
+.tabList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #444;
+  background: -moz-linear-gradient(top, #444, #444);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#444),
+    to(#444)
+  );
+  background: -o-linear-gradient(#444, #444);
+  background: linear-gradient(#444, #444);
+  color: white;
+  border: 0px solid;
+}
+
+/* Float the tab items side by side and style them */
+.tab {
+  float: left;
+  border-right: 0px solid #222;
+}
+
+@media screen and (min-width: 1425px) {
+  .w3-sidebar.w3-collapse {
+    display: block !important;
+  }
+}
+
+@media screen and (min-width: 1425px) {
+  #myAccordion,
+  .hidesm {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 1425px) {
+  .w3-main {
+    margin-left: 230px !important;
+  }
+  .w3-bar-block .w3-button {
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 1425px) {
+  .w3-sidebar.w3-collapse,
+  .barex,
+  .navex {
+    display: none !important;
+  }
+  .w3-bar-block .w3-bar-item {
+    text-align: center !important;
+    padding: 2px 0;
+  }
+  h1,
+  .w3-jumbo {
+    font-size: 60px !important;
+  }
+}
+
+/* Style the links inside the tab items */
+.tab a {
+  display: inline-block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  transition: 0.3s;
+  font-size: 17px;
+  color: white;
+}
+
+/* Change background color of tabLinks on hover */
+.tab a:hover {
+  text-decoration: none;
+  background-color: #777;
+}
+
+/* Create an active/current tablink class */
+.tab a:focus,
+.active {
+  background-color: #666;
+}
+
+@media screen and (max-width: 1425px) {
+  .tab a:focus,
+  .active {
+    background-color: #555;
+  }
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border-top: none;
+}
+
+.dx-lookup-search-wrapper {
+  height: 70px;
+}
+
+.dx-scrollable-scroll-content {
+  background-color: #428bca;
+  box-shadow: 0 0 0 1px #428bca;
+}
+
+.dx-datagrid-header-panel .dx-toolbar {
+  margin: 0;
+  padding-right: 20px;
+  background-color: #dedede;
+}
+
+.dx-datagrid-header-panel .dx-selectbox {
+  margin: 17px 10px;
+}
+
+.dx-datagrid-header-panel .dx-button {
+  margin: 17px 0;
+}
+
+.inputblock {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+  height: 36px;
+  position: relative;
+  margin: 10px;
+  margin-top: 0px;
+  font-size: 13px;
+  top: 9px;
+}
+
+.inputnumber {
+  width: 70px;
+  height: 36px;
+  color: silver;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  background: #292929;
+}
+
+.datepicker_custom {
+  vertical-align: middle;
+  width: 200px;
+  display: inline-block;
+  font-size: 13px;
+}
+
+.datepicker_label {
+  font-size: 13px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.w3-btn div {
+  height: 36px;
+}
+
+.version_control {
+  position: absolute;
+  top: 35px;
+  right: 9px;
+  color: white;
+  float: right;
+  font-size: 17px;
+}
+.minWidth {
+  min-width: 150px;
+}
+.minWidthMed {
+  min-width: 200px;
+}
+
+.leftCol {
+  width: 40%;
+  display: inline;
+  float: left;
+}
+
+.rightCol {
+  width: 50%;
+  display: inline;
+  float: right;
+}
+
+.informer {
+  padding: 5px;
+  /* height: 79px; */
+  width: 200px;
+  text-align: center;
+  background: #2a507c;
+}
+
+.count {
+  color: white;
+  padding-top: 15px;
+  line-height: 7px;
+  padding-bottom: 5px;
+  /* font-size: 20px; */
+}
+
+.name {
+  color: #619dd1;
+  /* overflow-wrap: break-word; */
+}
+/*.dx-toolbar .dx-toolbar-before {
+    padding-right: 15px;
+    padding-bottom: 20px;
+}*/
+.action-button-large {
+  position: relative;
+  padding: 1px 15px;
+  margin: 0px 8px 8px 0px;
+  border-radius: 10px;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 25px;
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  height: 100px;
+  display: none;
+}
+.green {
+  top: 50px;
+  background-color: #82bf56;
+  border-bottom: 5px solid #669644;
+  text-shadow: 0px -2px #669644;
+}
+.animate {
+  transition: all 0.1s;
+  -webkit-transition: all 0.1s;
+}
+.dx-datagrid-group-panel .dx-group-panel-message {
+  color: #f8f6f6;
+  font-weight: normal;
+  padding: 7px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.large-selectbox {
+  width: 100%;
+  min-width: 300px;
+  font-size: 13px;
+}
+.dx-checkbox-container {
+  height: 0%;
+}
+.dx-datagrid-group-panel .dx-group-panel-item {
+  background: #2a2a2a;
+}
+
+.gridHeight {
+  max-height: 450px;
+}
+@media only screen and (min-width: 1600px) {
+  .gridHeight {
+    max-height: 720px;
+  }
+}
+/* Extra large devices (large laptops and desktops, 1800px and up) */
+/* @media only screen and (min-width: 1800px) {
+  .gridHeight {
+    max-height: 820px;
+  }
+} */
