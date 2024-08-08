@@ -38,14 +38,14 @@ Ensure you have Docker and Docker Compose installed on your machine. If not, fol
 
     This command will:
     - Build the Docker images for the application and Selenium.
-    - Start the containers for the application (`testrunner`), Selenium (`selenium`), and NGINX (`nginx`).
+    - Start the containers for the application (`testrunner`), Selenium (`selenium`).
 
 2. **Access the Application**:
 
     Once the containers are up and running, you can access the TestRunner application in your web browser at:
 
     ```plaintext
-    http://localhost/testrunner
+    http://localhost:[port]/testrunner
     ```
 
 ## Configuration
