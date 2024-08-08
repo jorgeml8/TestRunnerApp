@@ -16,10 +16,10 @@ TestRunner is a web application designed to execute Selenium-based regression te
 
 First, clone the repository to your local machine:
 
-\`\`\`bash
+```bash
 git clone https://github.com/yourusername/TestRunnerApp.git
 cd TestRunnerApp
-\`\`\`
+```
 
 ### Setting Up Docker
 
