@@ -41,12 +41,12 @@ instance/
 # Docker
 *.pid
 *.log
-*.yaml
-*.yml
-docker-compose.override.yml
-docker-compose.*
-.env
-.env.*
+#*.yaml
+#*.yml
+#docker-compose.override.yml
+#docker-compose.*
+#.env
+#.env.*
 
 # Selenium drivers
 chromedriver

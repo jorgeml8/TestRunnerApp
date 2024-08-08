@@ -13,13 +13,7 @@
         <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/datatables.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/testrunner/static/css/tab.css?v=V3.1.0" />
         <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/highcharts.css"/>
-        <!--
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/w3.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/PHSReportStyleSheet.css?v=V3.1.0') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/waiting_indicator.css?v=V3.1.1') }}">
-        <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/datatables.min.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/tab.css?v=V3.1.0') }}">-->
-        <style>
+     <style>
           /* Custom style for date inputs */
           input[type="date"] {
             padding: 10px;
@@ -142,21 +136,6 @@
     {% endif %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!--    <script>
-        ('#test-form').on('submit', function(event) {
-        //document.getElementById('test-form').addEventListener('submit', function() {
-            document.getElementById('loadingIndicator').style.display = 'block';
-        });
-        window.addEventListener('load', function() {
-        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-        window.location.href = '/testrunner';
-        }
-        });
-        ('#clearSearch').click(function(event) {
-        event.preventDefault();
-        window.location.href = "/testrunner/";
-      });
-    </script>-->
     <script>
         $(document).ready(function() {
             $('#clearSearch').click(function(event) {

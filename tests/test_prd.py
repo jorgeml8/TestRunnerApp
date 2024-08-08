@@ -1,4 +1,5 @@
 import json
+import os
 import logging
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
@@ -8,14 +9,23 @@ def run_test():
         config = json.load(config_file)
     
     prd_configs = config["prd"]
+
+    # Obtener la URL del Selenium Server del entorno
+    selenium_url = os.getenv('SELENIUM_URL', 'http://localhost:4444/wd/hub')
+
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
-    options.binary_location = '/usr/bin/google-chrome'  # Asegúrate de que la ruta sea correcta
+    #options.binary_location = '/usr/bin/google-chrome'  # Asegurarse que la ruta sea correcta
 
-    driver = webdriver.Chrome(options=options)
+    #driver = webdriver.Chrome(options=options) # No se usa cuando se usa el container de Selenium
+      # Conectar al Selenium Server remoto
+    driver = webdriver.Remote(
+        command_executor=selenium_url,
+        options=options
+    )
     results = []
 
     for prd_config in prd_configs:

@@ -1,0 +1,30 @@
+version: '3.8'
+
+networks:
+  report_network:
+    external: true
+
+services:
+  selenium:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium
+    ports:
+      - "4444:4444"
+    shm_size: '2gb'
+    networks:
+      - report_network
+
+  testrunner:
+    build: .
+    container_name: testrunner
+    ports:
+      - "5000:5000"
+    depends_on:
+      - selenium
+    volumes:
+      - .:/app
+    environment:
+      - SELENIUM_URL=http://selenium:4444/wd/hub
+    networks:
+      - report_network
+
