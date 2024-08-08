@@ -85,44 +85,11 @@ services:
     networks:
       - report_network
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - report_network
 ```
 
 ### Environment Variables
 
 - `SELENIUM_URL`: URL of the Selenium server, which is set to `http://selenium:4444/wd/hub`.
-
-### NGINX Configuration
-
-The `nginx.conf` file defines the reverse proxy settings to route requests to the `testrunner` service:
-
-```nginx
-events {
-    worker_connections 1024;
-}
-
-http {
-    server {
-        listen 80;
-
-        location /testrunner {
-            proxy_pass http://testrunner:5000;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-        }
-    }
-}
-```
 
 ## Running Tests
 
