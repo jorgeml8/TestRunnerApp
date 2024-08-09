@@ -15,7 +15,10 @@ services:
       - report_network
 
   testrunner:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: testrunner:1.0.0
     container_name: testrunner
     ports:
       - "5000:5000"

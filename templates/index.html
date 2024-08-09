@@ -113,7 +113,7 @@
 <body>
  <!--   <h1>Selenium Test Runner</h1> -->
     <form id="test-form" action="/testrunner/run_test" method="post">
-        <label for="environment">Seleccione el entorno:</label>
+        <label for="environment">Select the environment:</label>
         <select id="environment" name="environment">
             <option value="uat">UAT</option>
             <option value="prd">PRD</option>
@@ -127,7 +127,7 @@
       </div>
 
     {% if results %}
-        <h2>Resultados de la Prueba:</h2>
+        <h2>Test Results:</h2>
         <ul>
             {% for result in results %}
                 <li>{{ result }}</li>
