@@ -29,8 +29,8 @@ def run_test():
     results = []
 
     for prd_config in prd_configs:
-        logging.info(f"Iniciando prueba en {prd_config['url']} - {prd_config['comment']}")
-        results.append(f"Iniciando prueba en {prd_config['url']} - {prd_config['comment']}")
+        logging.info(f"Starting test on {prd_config['url']} - {prd_config['comment']}")
+        results.append(f"Starting test on {prd_config['url']} - {prd_config['comment']}")
         driver.get(prd_config["url"])
         driver.maximize_window()
 
@@ -47,32 +47,32 @@ def run_test():
             # Capturar todos los enlaces
             all_links = driver.find_elements_by_tag_name('a')
             links_to_test = []
-            logging.info(f"Encontrados {len(all_links)} enlaces en la página.")
+            logging.info(f"Links {len(all_links)} found on the page.")
             for link in all_links:
                 href = link.get_attribute('href')
                 link_text = link.text
                 if href:
                     links_to_test.append((link_text, href))
-                    logging.info(f"Enlace encontrado: texto='{link_text}', href='{href}'")
+                    logging.info(f"Link found: texto='{link_text}', href='{href}'")
 
             # Interactuar con los enlaces capturados
             for link_text, href in links_to_test:
                 try:
-                    logging.info(f"Clic en el enlace con texto '{link_text}' y href: {href}")
-                    results.append(f"Clic en el enlace con texto '{link_text}' y href: {href}")
+                    logging.info(f"Click on the link with text '{link_text}' and href: {href}")
+                    results.append(f"Click on the link with text '{link_text}' and href: {href}")
                     driver.get(href)
                     driver.back()
                     results.append(f"Link '{href}' tested successfully.")
                 except Exception as e:
-                    error_message = f"Error al probar el enlace con texto '{link_text}' y href: {href}: {e}"
+                    error_message = f"Error testing the link with text '{link_text}' and href: {href}: {e}"
                     logging.error(error_message)
                     results.append(error_message)
 
-            logging.info(f"Prueba completada con éxito para {prd_config['url']}")
-            results.append(f"Prueba completada con éxito para {prd_config['url']}")
+            logging.info(f"Starting test onTest successfully completed for {prd_config['url']}")
+            results.append(f"Starting test onTest successfully completed for {prd_config['url']}")
 
         except Exception as e:
-            error_message = f"Error durante la prueba en {prd_config['url']}: {e}"
+            error_message = f"Error during the test on {prd_config['url']}: {e}"
             logging.error(error_message)
             results.append(error_message)
         
