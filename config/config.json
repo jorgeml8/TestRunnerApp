@@ -8,7 +8,7 @@
                 "http://amssl3uat/id1/admin/AMS_reports/attachment/add/"
         
               ],
-            "comment": "Prueba para el admin de ID1"
+            "comment": "Admin test for ID1"
         },
         {
             "url": "http://10.147.112.4/id2/admin/",
@@ -17,7 +17,7 @@
             "paths": [
                "http://10.147.112.4/id2/admin/sfcs/entity/"
                      ],
-            "comment": "Prueba para el admin de ID2"
+            "comment": "Admin test for ID2"
         }
     ],
     "prd":[ 
@@ -29,7 +29,7 @@
                 "http://amssl3uat/id1/admin/AMS_reports/attachment/add/"
         
               ],
-            "comment": "Prueba para el admin de ID3"
+            "comment": "Admin test for ID3"
         },
         {
             "url": "http://10.147.112.4/id4/admin/",
@@ -38,7 +38,7 @@
             "paths": [
                "http://10.147.112.4/id2/admin/sfcs/entity/"
                      ],
-            "comment": "Prueba para el admin de ID4"
+            "comment": "Admin test for ID5"
         }
     ]
 }
