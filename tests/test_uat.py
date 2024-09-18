@@ -14,7 +14,7 @@ def run_test(socketio):
     with open('config/config.json') as config_file:
         config = json.load(config_file)
 
-    prd_configs = config["uat"]
+    uat_configs = config["uat"]
 
     selenium_url = os.getenv('SELENIUM_URL', 'http://localhost:4444/wd/hub')
 
@@ -31,12 +31,12 @@ def run_test(socketio):
     )
     results = []
 
-    for prd_config in prd_configs:
-        log_message = f"Starting test in: {prd_config['url']} - {prd_config['comment']}"
+    for uat_config in uat_configs:
+        log_message = f"Starting test in: {uat_config['url']} - {uat_config['comment']}"
         logging.info(log_message)
         socketio.emit('log_message', {'message': log_message})
         results.append(log_message)
-        driver.get(prd_config["url"])
+        driver.get(uat_config["url"])
         driver.maximize_window()
 
         try:
@@ -47,8 +47,8 @@ def run_test(socketio):
             password_field = driver.find_element(By.NAME, "password")
             login_button = driver.find_element(By.CSS_SELECTOR, 'input[type="submit"][value="Log in"]')
 
-            username_field.send_keys(prd_config["username"])
-            password_field.send_keys(prd_config["password"])
+            username_field.send_keys(uat_config["username"])
+            password_field.send_keys(uat_config["password"])
             login_button.click()
 
             # Save all the links on a list
@@ -139,7 +139,7 @@ def run_test(socketio):
                 driver.back()
 
         except Exception as e:
-            error_message = f"Testing error in: {prd_config['url']}: {e}"
+            error_message = f"Testing error in: {uat_config['url']}: {e}"
             logging.error(error_message)
             socketio.emit('log_message', {'message': error_message})
             results.append(error_message)
@@ -150,18 +150,13 @@ def run_test(socketio):
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
 
-    # Save results to CSV
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    filename = f'results_{timestamp}.csv'
-    file_path = os.path.join(results_dir, filename)
+    file_path = os.path.join(results_dir, f'uat_results_{timestamp}.csv')
 
     df.to_csv(file_path, index=False)
     log_message = f"Results saved to {file_path}"
     logging.info(log_message)
     socketio.emit('log_message', {'message': log_message})
-
-    # Send the filename back to the client to allow download
-    socketio.emit('file_ready', {'filename': filename})
 
     driver.quit()
     return results

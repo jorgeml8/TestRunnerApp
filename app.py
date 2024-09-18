@@ -4,6 +4,8 @@ import os
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit
 from tests import test_uat, test_prd, test2_uat
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 # Configure logging
 logging.basicConfig(
@@ -49,12 +51,15 @@ def run_test_task(environment):
     result = None
     if environment == 'uat':
         result = test_uat.run_test(socketio)
+        result2 = test2_uat.run_test(socketio)
     elif environment == 'prd':
         result = test_prd.run_test(socketio)
 
     logging.info(f"Test results in: {environment.upper()}: {result}")
+    logging.info(f"Test results in: {environment.upper()}: {result2}")
     # Optionally, emit the final result
     socketio.emit('test_result', {'result': result})
+    socketio.emit('test_result', {'result': result2})
 
 if __name__ == '__main__':
     # Run the app with SocketIO
