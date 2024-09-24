@@ -8,16 +8,15 @@ from flask_socketio import SocketIO, emit
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException
 
-# Global variable to control the test execution
-stop_test = False
+# Import the stop_event from the main application
+from app import stop_event
 
 # Create SocketIO instance
 socketio = SocketIO(message_queue='redis://')
 
 def run_test(socketio):
-    global stop_test  # Use the global variable to control execution
     with open('config/config.json') as config_file:
         config = json.load(config_file)
 
@@ -38,7 +37,7 @@ def run_test(socketio):
     results = []
 
     for prd_config in prd_configs:
-        if stop_test:  # Check if the test should be stopped
+        if stop_event.is_set():  # Check if the test should be stopped
             log_message = "Test execution has been stopped."
             logging.info(log_message)
             socketio.emit('log_message', {'message': log_message})
@@ -85,7 +84,7 @@ def run_test(socketio):
             data = []  # List to store row data
 
             for index, (link_text, href) in enumerate(links_to_test):
-                if stop_test:  # Check if the test should be stopped
+                if stop_event.is_set():  # Check if the test should be stopped
                     log_message = "Test execution has been stopped."
                     logging.info(log_message)
                     socketio.emit('log_message', {'message': log_message})
@@ -185,10 +184,10 @@ def run_test(socketio):
 
 @socketio.on('reset')
 def handle_reset():
-    global stop_test  # Use the global variable to control execution
-    stop_test = True
+    global stop_event  # Use the stop_event from the main application
+    stop_event.set()  # Set the event to stop the test
     logging.info("Test reset initiated.")
 
 if __name__ == "__main__":
-    socketio = SocketIO(message_queue='redis://')
-    run_test(socketio)  # Call the test function to start execution
+    
+    socketio.run(run_test)  # Call the test function to start execution

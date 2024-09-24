@@ -193,78 +193,68 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-        $(document).ready(function () {
-            
-            const socket = io();
-            document.getElementById('resetButton').addEventListener('click', function() {
-                socket.emit('reset');});
+$(document).ready(function () {
+    const socket = io();
 
-            // Listen for progress updates
-            socket.on('update_progress', function (data) {
-                var progress = data.progress.toFixed(2);
-                $('#progressBar').css('width', progress + '%').text(progress + '%');
-            });
+    // Handle form submission for running the test
+    $('#test-form').on('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
 
-            // Listen for log messages
-            socket.on('log_message', function (data) {
-                var logDiv = $('#log');
-                logDiv.append('<p>' + data.message + '</p>');
-                logDiv.scrollTop(logDiv[0].scrollHeight); // Auto-scroll to bottom
-            });
+        // Disable "Run Test" and show loading
+        $('#runTest').prop('disabled', true);
+        $('#resetButton').prop('disabled', true);
+        $('#loadingIndicator').show();
 
-            // Listen for file_ready event to trigger the download
-            socket.on('file_ready', function (data) {
-                var filename = data.filename;
-                var downloadUrl = '/download/' + filename;
+        $('#progressBar').css('width', '0%').text('0%');
+        var environment = $('#environment').val();
 
-                // Create a temporary anchor tag and trigger the download
-                var a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
-
-            // Handle form submission
-            $('#test-form').on('submit', function (event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                // Disable "Run Test" and show loading
-                document.getElementById('runTest').disabled = true;
-                document.getElementById('clearSearch').disabled = true;
-                document.getElementById('loadingIndicator').style.display = 'block';
-
-                $('#progressBar').css('width', '0%').text('0%');
-                var environment = $('#environment').val();
-
-                // Perform the AJAX request
-                $.ajax({
-                    type: 'POST',
-                    url: '/testrunner/run_test',
-                    data: {
-                        environment: environment
-                    },
-                    success: function (response) {
-                        console.log(response); // Log the response for debugging
-                        $('#loadingIndicator').hide();
-                        // Enable the reset button
-                        $('#clearSearch').prop('disabled', false);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error occurred:', error);
-                    }
-                });
-            });
-
-            // Handle reset button click
-            $('#clearSearch').on('click', function () {
-                $('#progressBar').css('width', '0%').text('0%');
-                $('#log').empty();
-                document.getElementById('runTest').disabled = false;
-                $('#environment').val('uat'); // Reset dropdown to default option
-            });
+        // Perform the AJAX request to start the test
+        $.ajax({
+            type: 'POST',
+            url: '/testrunner/run_test',
+            data: {
+                environment: environment
+            },
+            success: function (response) {
+                console.log(response); // Log the response for debugging
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred:', error);
+            }
         });
+    });
+
+    // Handle the stop button click
+    $('#resetButton').on('click', function () {
+        // Emit a socket event to stop the test
+        socket.emit('stop_test');
+        $('#loadingIndicator').hide();
+    });
+
+    // Socket listener for progress updates
+    socket.on('update_progress', function (data) {
+        var progress = data.progress.toFixed(2);
+        $('#progressBar').css('width', progress + '%').text(progress + '%');
+    });
+
+    // Handle logs
+    socket.on('log_message', function (data) {
+        $('#log').append('<p>' + data.message + '</p>').scrollTop($('#log')[0].scrollHeight);
+    });
+
+    // Handle file download
+    socket.on('file_ready', function (data) {
+        var filename = data.filename;
+        var downloadUrl = '/download/' + filename;
+        var a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+});
+
     </script>
 </body>
 
