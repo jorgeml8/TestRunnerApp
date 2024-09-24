@@ -4,18 +4,24 @@ import logging
 import pandas as pd
 from datetime import datetime
 from selenium import webdriver
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 
+# Global variable to control the test execution
+stop_test = False
+
+# Create SocketIO instance
+socketio = SocketIO(message_queue='redis://')
+
 def run_test(socketio):
+    global stop_test  # Use the global variable to control execution
     with open('config/config.json') as config_file:
         config = json.load(config_file)
 
-    uat_configs = config["uat"]
-
+    prd_configs = config["uat"]
     selenium_url = os.getenv('SELENIUM_URL', 'http://localhost:4444/wd/hub')
 
     options = webdriver.ChromeOptions()
@@ -31,12 +37,18 @@ def run_test(socketio):
     )
     results = []
 
-    for uat_config in uat_configs:
-        log_message = f"Starting test in: {uat_config['url']} - {uat_config['comment']}"
+    for prd_config in prd_configs:
+        if stop_test:  # Check if the test should be stopped
+            log_message = "Test execution has been stopped."
+            logging.info(log_message)
+            socketio.emit('log_message', {'message': log_message})
+            break
+        
+        log_message = f"Starting test in: {prd_config['url']} - {prd_config['comment']}"
         logging.info(log_message)
         socketio.emit('log_message', {'message': log_message})
         results.append(log_message)
-        driver.get(uat_config["url"])
+        driver.get(prd_config["url"])
         driver.maximize_window()
 
         try:
@@ -47,8 +59,8 @@ def run_test(socketio):
             password_field = driver.find_element(By.NAME, "password")
             login_button = driver.find_element(By.CSS_SELECTOR, 'input[type="submit"][value="Log in"]')
 
-            username_field.send_keys(uat_config["username"])
-            password_field.send_keys(uat_config["password"])
+            username_field.send_keys(prd_config["username"])
+            password_field.send_keys(prd_config["password"])
             login_button.click()
 
             # Save all the links on a list
@@ -73,6 +85,12 @@ def run_test(socketio):
             data = []  # List to store row data
 
             for index, (link_text, href) in enumerate(links_to_test):
+                if stop_test:  # Check if the test should be stopped
+                    log_message = "Test execution has been stopped."
+                    logging.info(log_message)
+                    socketio.emit('log_message', {'message': log_message})
+                    break
+
                 try:
                     log_message = f"Click on  '{link_text}' with 'href': {href}"
                     logging.info(log_message)
@@ -108,7 +126,6 @@ def run_test(socketio):
                     except NoSuchElementException:
                         content_status = 'NOT FOUND'
 
-
                     data.append({
                         'Link': href,
                         'Status': 'SUCCESS',
@@ -139,7 +156,7 @@ def run_test(socketio):
                 driver.back()
 
         except Exception as e:
-            error_message = f"Testing error in: {uat_config['url']}: {e}"
+            error_message = f"Testing error in: {prd_config['url']}: {e}"
             logging.error(error_message)
             socketio.emit('log_message', {'message': error_message})
             results.append(error_message)
@@ -150,19 +167,28 @@ def run_test(socketio):
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
 
+    # Save results to CSV
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    file_path = os.path.join(results_dir, f'uat_results_{timestamp}.csv')
+    filename = f'results_{timestamp}.csv'
+    file_path = os.path.join(results_dir, filename)
 
     df.to_csv(file_path, index=False)
     log_message = f"Results saved to {file_path}"
     logging.info(log_message)
     socketio.emit('log_message', {'message': log_message})
 
+    # Send the filename back to the client to allow download
+    socketio.emit('file_ready', {'filename': filename})
+
     driver.quit()
     return results
 
+@socketio.on('reset')
+def handle_reset():
+    global stop_test  # Use the global variable to control execution
+    stop_test = True
+    logging.info("Test reset initiated.")
+
 if __name__ == "__main__":
     socketio = SocketIO(message_queue='redis://')
-    result = run_test(socketio)
-    for line in result:
-        print(line)
+    run_test(socketio)  # Call the test function to start execution

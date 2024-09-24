@@ -33,7 +33,8 @@
             padding-right: 5px;
         }
 
-        button[type="submit"] {
+        button[type="submit"],
+        #clearSearch {
             background-color: #4CAF50;
             color: white;
             padding: 12px 20px;
@@ -50,6 +51,11 @@
             background-color: #45a049;
         }
 
+        button[disabled] {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
         .input-container {
             margin-bottom: 10px;
             text-align: center;
@@ -64,10 +70,6 @@
         .table-responsive {
             overflow-x: auto;
             margin: 15px 0;
-        }
-
-        div.dt-container .dt-input {
-            background-color: #111;
         }
 
         #issuesTable th,
@@ -161,8 +163,8 @@
             <option value="uat">UAT</option>
             <option value="prd">PRD</option>
         </select>
-        <button type="submit">Run Test</button>
-        <button type="button" id="clearSearch" class="w3-btn w3-yellow w3-round-large dx-button dx-button-default dx-button-mode-contained dx-widget dx-button-has-text" style="width: calc(30% - 10px);height: 44px; border: none;border-radius: 4px;padding: 12px 20px;">Reset</button>
+        <button type="submit" id="runTest">Run Test</button>
+        <button type="button" id="resetButton" class="w3-btn w3-yellow w3-round-large dx-button dx-button-default dx-button-mode-contained dx-widget dx-button-has-text" style="width: calc(30% - 10px);height: 44px; border: none;border-radius: 4px;padding: 12px 20px;">Reset</button>
     </form>
 
     <div id="loadingIndicator" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
@@ -189,9 +191,13 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <script>
         $(document).ready(function () {
-            var socket = io();
+            
+            const socket = io();
+            document.getElementById('resetButton').addEventListener('click', function() {
+                socket.emit('reset');});
 
             // Listen for progress updates
             socket.on('update_progress', function (data) {
@@ -208,27 +214,28 @@
 
             // Listen for file_ready event to trigger the download
             socket.on('file_ready', function (data) {
-            var filename = data.filename;
-            var downloadUrl = '/download/' + filename;
+                var filename = data.filename;
+                var downloadUrl = '/download/' + filename;
 
-            // Create a temporary anchor tag and trigger the download
-            var a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        });
-
+                // Create a temporary anchor tag and trigger the download
+                var a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
 
             // Handle form submission
             $('#test-form').on('submit', function (event) {
                 event.preventDefault(); // Prevent the default form submission
 
-                document.getElementById('loadingIndicator').style.display = 'block';
+                // Disable "Run Test" and show loading
+                document.getElementById('runTest').disabled = true;
                 document.getElementById('clearSearch').disabled = true;
-                $('#progressBar').css('width', '0%').text('0%');
+                document.getElementById('loadingIndicator').style.display = 'block';
 
+                $('#progressBar').css('width', '0%').text('0%');
                 var environment = $('#environment').val();
 
                 // Perform the AJAX request
@@ -241,20 +248,21 @@
                     success: function (response) {
                         console.log(response); // Log the response for debugging
                         $('#loadingIndicator').hide();
-                        document.getElementById('clearSearch').disabled = false;
+                        // Enable the reset button
+                        $('#clearSearch').prop('disabled', false);
                     },
-                    error: function (error) {
-                        console.error('Error:', error);
-                        $('#loadingIndicator').hide();
-                        document.getElementById('clearSearch').disabled = false;
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred:', error);
                     }
                 });
             });
 
-            // Reset button behavior
-            $('#clearSearch').click(function (event) {
-                event.preventDefault();
-                window.location.href = "/testrunner/";
+            // Handle reset button click
+            $('#clearSearch').on('click', function () {
+                $('#progressBar').css('width', '0%').text('0%');
+                $('#log').empty();
+                document.getElementById('runTest').disabled = false;
+                $('#environment').val('uat'); // Reset dropdown to default option
             });
         });
     </script>
