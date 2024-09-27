@@ -1,10 +1,12 @@
+# Import necessary libraries
 import logging
 import json
 import os
 from flask import Flask, render_template, request, jsonify, send_from_directory
-from flask_socketio import SocketIO, emit
-from tests import test_uat, test_prd, test2_uat  # Updated import for tests
-import threading
+from flask_socketio import SocketIO
+from tests import test_uat, test_prd, test2_uat  # Assuming test_uat is modified accordingly
+from threading import Event
+import time
 
 # Configure logging
 logging.basicConfig(
@@ -24,80 +26,39 @@ RESULTS_DIR = os.path.join(os.getcwd(), 'resultsUAT')
 script_dir = os.path.dirname(os.path.abspath(__file__))
 credentials_file = os.path.join(script_dir, 'credentials.json')
 
-# Global variables to manage the test process
-test_thread = None
-stop_test_flag = False
+# Event to control test execution (used for stopping the test)
+stop_event = Event()
 
 # Load app version from version.json
 with open(os.path.join(script_dir, 'version.json'), 'r') as file:
     version_data = json.load(file)
-    app_version = version_data.get('version', '1.3.0')
+    app_version = version_data.get('version', '1.0.0')
 
 # Routes
 @app.route('/testrunner/')
 def index():
     return render_template('index.html', version=app_version)
 
+# Route to start the test
 @app.route('/testrunner/run_test', methods=['POST'])
-def start_test():
-    environment = request.form.get('environment', '').lower()
-    global stop_test_flag
-    stop_test_flag = False  # Reset the stop flag at the start of a new test
-    if environment not in ['uat', 'prd']:
-        return jsonify({'error': 'Invalid environment'}), 400
-
+def run_test():
+    stop_event.clear()  # Clear any existing stop signal
+    environment = request.form.get('environment')
+    
     logging.info(f"Starting test in: {environment.upper()}")
+    socketio.start_background_task(run_test_task, environment)  # Run the test in the background
+    
+    return jsonify({'status': 'Test started'}), 200
 
-    # Run the test in the background
-    socketio.start_background_task(run_test_task, environment)
-
-    return jsonify({'status': f'Test in {environment.upper()} started'})
-
-# Function that runs the test and checks the stop flag periodically
-def run_test_task(environment):
-    global stop_test_flag
-
-    try:
-        # Run test and periodically check if the test was stopped
-        if environment == 'uat':
-            result = test_uat.run_test(socketio, stop_test_flag_callback)
-        elif environment == 'prd':
-            result = test_prd.run_test(socketio, stop_test_flag_callback)
-
-        # Only emit completion message if not stopped
-        if not stop_test_flag:
-            logging.info(f"Test in {environment.upper()} completed: {result}")
-            socketio.emit('test_result', {'result': result})
-
-    except Exception as e:
-        logging.error(f"Error running test for {environment.upper()}: {e}")
-        socketio.emit('test_result', {'error': str(e)})
-    finally:
-        if stop_test_flag:
-            logging.info(f"Test in {environment.upper()} was stopped.")
-            socketio.emit('test_result', {'error': 'Test was stopped by the user.'})
-
-# A callback function that can be passed to the tests to stop them
-def stop_test_flag_callback():
-    global stop_test_flag
-    return stop_test_flag
-
-# Socket.IO event for stopping the test
-@socketio.on('stop_test')
-def handle_stop_test():
-    global stop_test_flag
-    stop_test_flag = True  # Set the flag to stop the test
-    logging.info("Stop signal received via Socket.IO, stopping the test...")
-    emit('log_message', {'message': 'Stop test signal received.'})
-
-# HTTP route for stopping the test
-@app.route('/stop_test', methods=['POST'])
+# Route to stop the test
+@app.route('/testrunner/stop_test', methods=['POST'])
 def stop_test():
-    global stop_test_flag
-    stop_test_flag = True  # Set the flag to stop the test
-    logging.info("Stop signal received via HTTP, stopping the test...")
-    return jsonify({'status': 'Test stopped'})
+    # Set the stop event to signal the test to stop
+    stop_event.set()
+    logging.info('Stop signal received')
+    return jsonify({'status': 'Test stopping'}), 200
 
+# Route to download a test result file
 @app.route('/download/<filename>')
 def download_file(filename):
     try:
@@ -106,6 +67,41 @@ def download_file(filename):
         logging.error(f"Error downloading file: {e}")
         return jsonify({"error": str(e)}), 404
 
+# Function to run the test task
+def run_test_task(environment):
+    try:
+        # Ensure the stop event is cleared before starting
+        stop_event.clear()
+
+        # Running tests for UAT environment
+        if environment == 'uat':
+            for test in [test_uat, test2_uat]:
+                if stop_event.is_set():  # Check if the stop event was set
+                    logging.info("Test stopped during UAT")
+                    socketio.emit('test_result', {'result': 'Test stopped'})
+                    return
+
+                result = test.run_test(socketio, stop_event)  # Pass the stop_event to the test function
+                logging.info(f"Completed {test.__name__} in UAT: {result}")
+
+        # Running tests for PRD environment
+        elif environment == 'prd':
+            if stop_event.is_set():
+                logging.info("Test stopped before PRD test")
+                socketio.emit('test_result', {'result': 'Test stopped'})
+                return
+
+            result = test_prd.run_test(socketio, stop_event)  # Pass the stop_event to the PRD test function
+            logging.info(f"Test in PRD completed: {result}")
+
+        # Emit a message indicating that all tests completed successfully
+        socketio.emit('test_result', {'result': 'All tests completed'})
+
+    except Exception as e:
+        logging.error(f"Error running test for {environment.upper()}: {e}")
+        socketio.emit('test_result', {'error': str(e)})
+
+# Main entry point for the Flask app
 if __name__ == '__main__':
-    # Start the Flask app with SocketIO
+    # Start the Flask app with SocketIO support
     socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
