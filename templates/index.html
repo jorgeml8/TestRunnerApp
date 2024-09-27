@@ -14,6 +14,7 @@
     <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/datatables.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/testrunner/static/css/tab.css?v=V3.1.0" />
     <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/highcharts.css" />
+    
     <style>
         /* Custom style for date inputs */
         input[type="date"] {
@@ -157,15 +158,21 @@
         </div>
     </div>
 
-    <form id="test-form">
-        <label for="environment">Select environment:</label>
-        <select id="environment" name="environment">
-            <option value="uat">UAT</option>
-            <option value="prd">PRD</option>
-        </select>
-        <button type="submit" id="runTest">Run Test</button>
-        <button type="button" id="resetButton" class="w3-btn w3-yellow w3-round-large dx-button dx-button-default dx-button-mode-contained dx-widget dx-button-has-text" style="width: calc(30% - 10px);height: 44px; border: none;border-radius: 4px;padding: 12px 20px;">Reset</button>
-    </form>
+    <div style="display: flex; align-items: center;">
+        <form id="test-form" style="margin-right: 10px;">
+            <label for="environment">Select environment:</label>
+            <select id="environment" name="environment">
+                <option value="uat">UAT</option>
+                <option value="prd">PRD</option>
+            </select>
+            <button type="submit">Run Test</button>
+        </form>
+    
+        <!-- Stop test button -->
+        <form id="stop-test-form" method="POST" action="stop_test">
+            <button type="submit" id="clearSearch" class="w3-btn w3-yellow w3-round-large dx-button dx-button-default dx-button-mode-contained dx-widget dx-button-has-text">Stop test</button>
+        </form>
+    </div>
 
     <div id="loadingIndicator" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
         <div style="border: 8px solid #f3f3f3; border-top: 8px solid #3498db; border-radius: 50%; width: 60px; height: 60px; animation: spin 2s linear infinite;"></div>
@@ -193,68 +200,67 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-$(document).ready(function () {
-    const socket = io();
+        $(document).ready(function () {
+            const socket = io();
 
-    // Handle form submission for running the test
-    $('#test-form').on('submit', function (event) {
-        event.preventDefault(); // Prevent the default form submission
+            // Handle form submission for running the test
+            $('#test-form').on('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
 
-        // Disable "Run Test" and show loading
-        $('#runTest').prop('disabled', true);
-        $('#resetButton').prop('disabled', true);
-        $('#loadingIndicator').show();
+                // Disable "Run Test" and show loading
+                $('#runTest').prop('disabled', true);
+                $('#resetButton').prop('disabled', true);
+                $('#loadingIndicator').show();
 
-        $('#progressBar').css('width', '0%').text('0%');
-        var environment = $('#environment').val();
+                $('#progressBar').css('width', '0%').text('0%');
+                var environment = $('#environment').val();
 
-        // Perform the AJAX request to start the test
-        $.ajax({
-            type: 'POST',
-            url: '/testrunner/run_test',
-            data: {
-                environment: environment
-            },
-            success: function (response) {
-                console.log(response); // Log the response for debugging
-            },
-            error: function (xhr, status, error) {
-                console.error('Error occurred:', error);
-            }
+                // Perform the AJAX request to start the test
+                $.ajax({
+                    type: 'POST',
+                    url: '/testrunner/run_test',
+                    data: {
+                        environment: environment
+                    },
+                    success: function (response) {
+                        console.log(response); // Log the response for debugging
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred:', error);
+                    }
+                });
+            });
+
+            // Handle the stop button click
+            $('#resetButton').on('click', function () {
+                // Emit a socket event to stop the test
+                socket.emit('stop_test');
+                $('#loadingIndicator').hide();
+            });
+
+            // Socket listener for progress updates
+            socket.on('update_progress', function (data) {
+                var progress = data.progress.toFixed(2);
+                $('#progressBar').css('width', progress + '%').text(progress + '%');
+            });
+
+            // Handle logs
+            socket.on('log_message', function (data) {
+                $('#log').append('<p>' + data.message + '</p>').scrollTop($('#log')[0].scrollHeight);
+            });
+
+            // Handle file download
+            socket.on('file_ready', function (data) {
+                var filename = data.filename;
+                var downloadUrl = '/download/' + filename;
+                var a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
         });
-    });
-
-    // Handle the stop button click
-    $('#resetButton').on('click', function () {
-        // Emit a socket event to stop the test
-        socket.emit('stop_test');
-        $('#loadingIndicator').hide();
-    });
-
-    // Socket listener for progress updates
-    socket.on('update_progress', function (data) {
-        var progress = data.progress.toFixed(2);
-        $('#progressBar').css('width', progress + '%').text(progress + '%');
-    });
-
-    // Handle logs
-    socket.on('log_message', function (data) {
-        $('#log').append('<p>' + data.message + '</p>').scrollTop($('#log')[0].scrollHeight);
-    });
-
-    // Handle file download
-    socket.on('file_ready', function (data) {
-        var filename = data.filename;
-        var downloadUrl = '/download/' + filename;
-        var a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    });
-});
-
     </script>
 </body>
 
